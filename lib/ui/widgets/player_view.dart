@@ -19,6 +19,8 @@ import 'package:tennis_app/ui/gen/assets.gen.dart';
 
 */
 
+const _scores = [0, 15, 30, 40, 100];
+
 class PlayerView extends StatefulWidget {
   const PlayerView({
     required this.playerId,
@@ -82,9 +84,10 @@ class _PlayerViewState extends State<PlayerView> {
                       stream: widget.playerScore$,
                       initialData: 0,
                       builder: ((_, snapshot) {
-                        final data = snapshot.data;
+                        final balls = snapshot.data!;
+                        final title = balls > 3 ? 'A' : '${_scores[balls]}';
                         return Text(
-                          data.toString(),
+                          title,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,

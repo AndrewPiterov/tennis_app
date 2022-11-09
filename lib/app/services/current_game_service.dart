@@ -6,7 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:speed_up/speed_up.dart';
 import 'package:tennis_app/app/app.dart';
 
-const _scores = [0, 15, 30, 40, 100];
+const _scores = [0, 15, 30, 40, 100, 1000];
 
 enum GameState { idle, playing, completed }
 
@@ -32,15 +32,25 @@ class CurrentGameService {
   final _player2Name = ''.obs;
   String get player2Name => _player2Name.value;
 
-  Stream<int> get winner$ => _scoreSubject.map(
-        (event) {
-          if ((event.item1 - event.item2).abs() > 1) {
-            return event.item1 > event.item2 ? 1 : 2;
-          }
+  final _deuceSubject = BehaviorSubject.seeded(false);
 
-          return -1;
-        },
-      );
+  Stream<int> get winner$ =>
+      CombineLatestStream.combine2<Tuple2<int, int>, bool, int>(
+          _scoreSubject, _deuceSubject, (balls, isDeuce) {
+        if (isDeuce) {
+          if ((balls.item1 - balls.item2).abs() > 1) {
+            return balls.item1 > balls.item2 ? 1 : 2;
+          }
+        } else {
+          if (balls.item1 >= 4 || balls.item2 >= 4) {
+            if ((balls.item1 - balls.item2).abs() > 1) {
+              return balls.item1 > balls.item2 ? 1 : 2;
+            }
+          }
+        }
+
+        return -1;
+      });
 
   Future hit(int player) async {
     final winner = await winner$.first;
@@ -49,10 +59,19 @@ class CurrentGameService {
       return;
     }
 
-    if (player == 1) {
-      _scoreSubject.add(Tuple2(score1 + 1, score2));
+    final balls =
+        player == 1 ? Tuple2(score1 + 1, score2) : Tuple2(score1, score2 + 1);
+
+    final firstPlayerScore = _scores[balls.item1];
+    final secondPlayerScore = _scores[balls.item2];
+    if (firstPlayerScore == 40 && secondPlayerScore == 40) {
+      _deuceSubject.add(true);
+      log('Deuce');
+      _scoreSubject.add(balls);
+    } else if (firstPlayerScore == 100 && secondPlayerScore == 100) {
+      _scoreSubject.add(Tuple2(3, 3));
     } else {
-      _scoreSubject.add(Tuple2(score1, score2 + 1));
+      _scoreSubject.add(balls);
     }
   }
 
@@ -63,6 +82,7 @@ class CurrentGameService {
 
   void reset() {
     _scoreSubject.add(Tuple2(0, 0));
+    _deuceSubject.add(false);
   }
 
   void onPlayer1NameChanged(String value) {
