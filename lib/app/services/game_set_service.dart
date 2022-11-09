@@ -1,11 +1,8 @@
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:speed_up/speed_up.dart';
-import 'package:tennis_app/app/app.dart';
 
 class GameSetService extends GetxController {
-  final PlayerGameRepository _repository = Get.find();
-
   final _gamesSubject = BehaviorSubject.seeded(<Tuple2<int, int>>[]);
   List<Tuple2<int, int>> get games => _gamesSubject.value;
 
@@ -33,7 +30,6 @@ class GameSetService extends GetxController {
       }).distinct();
 
   void saveSet(Tuple2<int, int> game) {
-    _repository.saveGame(game);
     _gamesSubject.add([...games, game]);
   }
 }
