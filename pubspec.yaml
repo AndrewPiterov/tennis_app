@@ -43,6 +43,7 @@ dependencies:
   reactive_forms: ^14.1.0
   equatable: ^2.0.5
   rxdart: ^0.27.5
+  fluent_result: ^7.2.0
 
 dev_dependencies:
   flutter_test:

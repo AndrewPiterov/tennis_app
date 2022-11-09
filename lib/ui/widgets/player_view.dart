@@ -18,19 +18,24 @@ import 'package:tennis_app/app/app.dart';
 
 */
 
-class PlayerView extends StatelessWidget {
-  PlayerView({
+class PlayerView extends StatefulWidget {
+  const PlayerView({
     required this.playerId,
     required this.playerScore$,
     required this.playerPlays$,
     super.key,
   });
 
-  final CurrentGameService _currentGameService = Get.find();
-
   final int playerId;
   final Stream<int> playerScore$;
   final Stream<List<Tuple2<int, int>>> playerPlays$;
+
+  @override
+  State<PlayerView> createState() => _PlayerViewState();
+}
+
+class _PlayerViewState extends State<PlayerView> {
+  final CurrentGameService _currentGameService = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -39,18 +44,22 @@ class PlayerView extends StatelessWidget {
         children: [
           20.h,
           Center(
-            child: Text(
-              'Player #$playerId',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            child: Obx(
+              () => Text(
+                widget.playerId == 1
+                    ? _currentGameService.player1Name
+                    : _currentGameService.player2Name,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
           40.h,
           Expanded(
             child: StreamBuilder(
-              stream: playerPlays$,
+              stream: widget.playerPlays$,
               builder: ((context, snapshot) {
                 final games = snapshot.data ?? [];
                 return Column(
@@ -75,7 +84,7 @@ class PlayerView extends StatelessWidget {
           ),
           40.h,
           StreamBuilder<int>(
-            stream: playerScore$,
+            stream: widget.playerScore$,
             initialData: 0,
             builder: ((_, snapshot) {
               final data = snapshot.data;
@@ -99,6 +108,6 @@ class PlayerView extends StatelessWidget {
   }
 
   void _hitBall() {
-    _currentGameService.hit(playerId);
+    _currentGameService.hit(widget.playerId);
   }
 }
