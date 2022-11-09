@@ -5,22 +5,6 @@ import 'package:speed_up_flutter/speed_up_flutter.dart';
 import 'package:tennis_app/app/app.dart';
 import 'package:tennis_app/ui/gen/assets.gen.dart';
 
-/*
- Счет увеличивается по стандартным правилам тенниса 0 – 15 – 30 – 40 – Победа в гейме. 
- 
- Если счет 40 – 40, то для победы необходимо выиграть 2 мяча. 
- При выигрыше первого мяча у выигравшего мяч счет меняется с 40 на A. 
- Если после этого другой игрок выиграл мяч, то счет становится снова 40:40. 
- При победе в гейме счет обоих игроков в текущем гейме сбрасывается на 0:0,
-а счетчик выигранных геймов у победителя увеличивается.
-
- Если победитель выиграл 6 геймов или более с разнией 2 и более (6:0, 6:1, 6:2, 6:3, 6:4, 7:5, 8:6 и т.д.) 
- – возникает всплывающее сообщение о победе соответсвующего игрока в сете..
-
-*/
-
-const _scores = [0, 15, 30, 40, 100];
-
 class PlayerView extends StatefulWidget {
   const PlayerView({
     required this.playerId,
@@ -85,7 +69,8 @@ class _PlayerViewState extends State<PlayerView> {
                       initialData: 0,
                       builder: ((_, snapshot) {
                         final balls = snapshot.data!;
-                        final title = balls > 3 ? 'A' : '${_scores[balls]}';
+                        final title =
+                            balls > 3 ? 'A' : '${AppConstants.scores[balls]}';
                         return Text(
                           title,
                           style: const TextStyle(

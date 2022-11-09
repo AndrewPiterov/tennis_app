@@ -6,8 +6,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:speed_up/speed_up.dart';
 import 'package:tennis_app/app/app.dart';
 
-const _scores = [0, 15, 30, 40, 100, 1000];
-
 enum GameState { idle, playing, completed }
 
 class CurrentGameService {
@@ -62,8 +60,8 @@ class CurrentGameService {
     final balls =
         player == 1 ? Tuple2(score1 + 1, score2) : Tuple2(score1, score2 + 1);
 
-    final firstPlayerScore = _scores[balls.item1];
-    final secondPlayerScore = _scores[balls.item2];
+    final firstPlayerScore = AppConstants.scores[balls.item1];
+    final secondPlayerScore = AppConstants.scores[balls.item2];
     if (firstPlayerScore == 40 && secondPlayerScore == 40) {
       _deuceSubject.add(true);
       log('Deuce');
@@ -85,18 +83,12 @@ class CurrentGameService {
     _deuceSubject.add(false);
   }
 
-  void onPlayer1NameChanged(String value) {
-    _player1Name.value = value;
-  }
-
-  void onPlayer2NameChanged(String value) {
-    _player2Name.value = value;
-  }
-
-  Result start() {
+  Result start(String player1Name, String player2Name) {
     if (player1Name.isNullOrEmpty || player2Name.isNullOrEmpty) {
       return fail('Please enter player names');
     }
+    _player1Name.value = player1Name;
+    _player2Name.value = player2Name;
 
     _stateSubject.add(GameState.playing);
     return success();
