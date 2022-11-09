@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:speed_up_flutter/speed_up_flutter.dart';
 import 'package:tennis_app/app/app.dart';
-import 'package:tennis_app/ui/text_formatters/player_name_formatter.dart';
 import 'package:tennis_app/ui/pages/widgets/player_view.dart';
+import 'package:tennis_app/ui/text_formatters/player_name_formatter.dart';
 import 'package:tennis_app/ui/widgets/submit_button.dart';
 
 class HomePage extends StatefulWidget {

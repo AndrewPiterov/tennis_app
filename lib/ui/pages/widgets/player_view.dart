@@ -46,7 +46,7 @@ class _PlayerViewState extends State<PlayerView> {
           Expanded(
             child: StreamBuilder(
               stream: widget.playerPlays$,
-              builder: ((context, snapshot) {
+              builder: (context, snapshot) {
                 final games = snapshot.data ?? [];
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +55,7 @@ class _PlayerViewState extends State<PlayerView> {
                       (e) => Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          '${e.item1}:${e.item2}',
+                          '${e.item1 > e.item2 ? '🎉' : ''} ${e.item1}:${e.item2}',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -67,7 +67,7 @@ class _PlayerViewState extends State<PlayerView> {
                     StreamBuilder<int>(
                       stream: widget.playerScore$,
                       initialData: 0,
-                      builder: ((_, snapshot) {
+                      builder: (_, snapshot) {
                         final balls = snapshot.data!;
                         final title =
                             balls > 3 ? 'A' : '${AppConstants.scores[balls]}';
@@ -78,11 +78,11 @@ class _PlayerViewState extends State<PlayerView> {
                             fontWeight: FontWeight.bold,
                           ),
                         );
-                      }),
+                      },
                     ),
                   ],
                 );
-              }),
+              },
             ),
           ),
           InkWell(
