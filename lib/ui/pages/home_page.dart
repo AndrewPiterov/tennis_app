@@ -26,10 +26,13 @@ class _HomePageState extends State<HomePage> {
 
     _winnerSubscription = _currentGameService.winner$.listen((player) {
       if (player > 0) {
+        final playerName = player == 1
+            ? _currentGameService.player1Name
+            : _currentGameService.player2Name;
         Get.dialog(
           AlertDialog(
             title: const Text('Game Winner'),
-            content: Text('Player #$player won the game'),
+            content: Text('Player #$playerName won the game'),
             actions: [
               TextButton(
                 onPressed: () {
@@ -45,12 +48,15 @@ class _HomePageState extends State<HomePage> {
       }
     });
 
-    _setWinnerSubscription = _setService.setWinner$.listen((event) {
-      if (event > 0) {
+    _setWinnerSubscription = _setService.setWinner$.listen((player) {
+      if (player > 0) {
+        final playerName = player == 1
+            ? _currentGameService.player1Name
+            : _currentGameService.player2Name;
         Get.dialog(
           AlertDialog(
             title: const Text('Set Winner'),
-            content: Text('Player #$event won the set'),
+            content: Text('Player #$playerName won the set'),
             actions: [
               TextButton(
                 onPressed: () {
