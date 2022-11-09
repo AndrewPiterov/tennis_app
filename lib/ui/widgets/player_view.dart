@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:speed_up/speed_up.dart';
 import 'package:speed_up_flutter/speed_up_flutter.dart';
 import 'package:tennis_app/app/app.dart';
+import 'package:tennis_app/ui/gen/assets.gen.dart';
 
 /*
  Счет увеличивается по стандартным правилам тенниса 0 – 15 – 30 – 40 – Победа в гейме. 
@@ -56,7 +57,6 @@ class _PlayerViewState extends State<PlayerView> {
               ),
             ),
           ),
-          40.h,
           Expanded(
             child: StreamBuilder(
               stream: widget.playerPlays$,
@@ -64,44 +64,48 @@ class _PlayerViewState extends State<PlayerView> {
                 final games = snapshot.data ?? [];
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: games
-                      .map(
-                        (e) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            '${e.item1}:${e.item2}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  children: [
+                    ...games.map(
+                      (e) => Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          '${e.item1}:${e.item2}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      )
-                      .toList(),
+                      ),
+                    ),
+                    20.h,
+                    StreamBuilder<int>(
+                      stream: widget.playerScore$,
+                      initialData: 0,
+                      builder: ((_, snapshot) {
+                        final data = snapshot.data;
+                        return Text(
+                          data.toString(),
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
                 );
               }),
             ),
           ),
-          40.h,
-          StreamBuilder<int>(
-            stream: widget.playerScore$,
-            initialData: 0,
-            builder: ((_, snapshot) {
-              final data = snapshot.data;
-              return Text(
-                data.toString(),
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              );
-            }),
+          InkWell(
+            onTap: _hitBall,
+            child: Assets.images.tennisBall.image(
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+            ),
           ),
-          40.h,
-          ElevatedButton(
-            onPressed: _hitBall,
-            child: const Text('Hit a Ball'),
-          ),
+          30.h,
         ],
       ),
     );
